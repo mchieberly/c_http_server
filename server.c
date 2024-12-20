@@ -95,8 +95,8 @@ void *server_thread(void *arg) {
         if (bytes_read > 0) {
             buffer[bytes_read] = '\0'; // Null-terminate the string
 
-            // Ensure the message is truncated to avoid buffer overflow
-            char truncated_buffer[994]; // 994 accounts for the fixed message and null terminator
+            // Ensure the message is truncated
+            char truncated_buffer[994]; 
             strncpy(truncated_buffer, buffer, sizeof(truncated_buffer) - 1);
             truncated_buffer[sizeof(truncated_buffer) - 1] = '\0'; // Ensure null termination
 
@@ -142,6 +142,24 @@ void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_container_add(GTK_CONTAINER(scrolled_window), text_view);
     gtk_container_add(GTK_CONTAINER(window), scrolled_window);
+
+    // --- Add this section for dark background styling ---
+    {
+        // Your desired CSS
+        const char *css_data =
+            "* {\n"
+            "   background-color: #2e2e2e;\n"   // Dark background
+            "   color: #ffffff;\n"              // Light text
+            "}\n";
+
+        GtkCssProvider *css_provider = gtk_css_provider_new();
+        GdkScreen *screen = gdk_screen_get_default();
+        gtk_css_provider_load_from_data(css_provider, css_data, -1, NULL);
+        gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(css_provider),
+                                                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        g_object_unref(css_provider);
+    }
+    // --- End of styling section ---
 
     gtk_widget_show_all(window);
 
